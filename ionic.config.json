@@ -1,0 +1,7 @@
+{
+  "name": "Bone Fracture Application",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
