@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import {AngularFireAuth} from '@angular/fire/compat/auth';
+import firebase from 'firebase/compat/app';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-sign-up',
@@ -14,7 +17,12 @@ export class SignUpPage implements OnInit {
 
 
 
-  constructor(private router: Router) { }
+  constructor(
+    private router: Router,
+    private show_alert: AlertController,
+    private auth: AngularFireAuth) { }
+  
+  
 
   ngOnInit() {
   }
@@ -24,7 +32,35 @@ export class SignUpPage implements OnInit {
 
   password_match() {  
     if (this.password1 == this.password2){
-      this.router.navigate(["/home"])
+      this.sign_up_auth()
+    }
+    else if (this.password1 != this.password2) {
+      this.alert("Passwords Don't Match!","Please re-enter the passwords. Current passwords do not match!")
     }
   }
+
+  async alert (title: string, actual_message: string) {
+    let alert = await this.show_alert.create({
+      header: title,
+      message: actual_message,
+      buttons: ["Dismiss"]
+    });
+    await alert.present();
+
+  }
+
+  sign_up_auth() {
+    this.auth.createUserWithEmailAndPassword(this.email,this.password1).then((result) => {
+      this.router.navigate(["/tabs"])
+      console.log(result)
+    }).catch( (err) => {
+      console.log(err);
+      this.alert("Error!",err.message)
+    })
+  }
+
+
+  
+
+
 }
